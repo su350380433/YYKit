@@ -16,10 +16,20 @@ NS_ASSUME_NONNULL_BEGIN
 
 /**
  Type encoding's type.
+ 枚举定义中，存在不同类型的定义（可以用0xFF、0xFF00、0xFF0000来区别），而不同的类型又需要组合。
+ Mask枚举值，没有实际作用，只是用来获取低n位的枚举数值,让枚举值之间可以使用运算符|、&
+ 使用NS_OPTIONS来定义具有位移的枚举类型，NS_ENUM是通用情况
+ 
+ 作者：js丶
+ 链接：https://www.jianshu.com/p/bd5866079984
+ 來源：简书
+ 简书著作权归作者所有，任何形式的转载都请联系作者获得授权并注明出处。
  */
 typedef NS_OPTIONS(NSUInteger, YYEncodingType) {
-    YYEncodingTypeMask       = 0xFF, ///< mask of type value
-    YYEncodingTypeUnknown    = 0, ///< unknown
+    
+    // Table 6-1 Foundation Framework 编码
+    YYEncodingTypeMask       = 0xFF, ///< mask of type value  表示低8位的十六进制Mask掩码，用于得到枚举值的低8位值(0 --> 8位)，对0xFF按位与运算，可以避免误差
+    YYEncodingTypeUnknown    = 0, ///< unknown 类型编码未知
     YYEncodingTypeVoid       = 1, ///< void
     YYEncodingTypeBool       = 2, ///< bool
     YYEncodingTypeInt8       = 3, ///< char / BOOL
@@ -43,7 +53,9 @@ typedef NS_OPTIONS(NSUInteger, YYEncodingType) {
     YYEncodingTypeCString    = 21, ///< char*
     YYEncodingTypeCArray     = 22, ///< char[10] (for example)
     
-    YYEncodingTypeQualifierMask   = 0xFF00,   ///< mask of qualifier
+    
+    // Table 6-2 Qualifier限定符编码
+    YYEncodingTypeQualifierMask   = 0xFF00,   ///< mask of qualifier 表示8 ~ 15位 的十六进制Mask掩码,用于得到枚举值的低15位值
     YYEncodingTypeQualifierConst  = 1 << 8,  ///< const
     YYEncodingTypeQualifierIn     = 1 << 9,  ///< in
     YYEncodingTypeQualifierInout  = 1 << 10, ///< inout
@@ -52,7 +64,9 @@ typedef NS_OPTIONS(NSUInteger, YYEncodingType) {
     YYEncodingTypeQualifierByref  = 1 << 13, ///< byref
     YYEncodingTypeQualifierOneway = 1 << 14, ///< oneway
     
-    YYEncodingTypePropertyMask         = 0xFF0000, ///< mask of property
+    
+    // Table 7-1 Property属性编码
+    YYEncodingTypePropertyMask         = 0xFF0000, ///< mask of property 表示16 ~ 24位 的十六进制Mask掩码,用于得到枚举值的低24位值
     YYEncodingTypePropertyReadonly     = 1 << 16, ///< readonly
     YYEncodingTypePropertyCopy         = 1 << 17, ///< copy
     YYEncodingTypePropertyRetain       = 1 << 18, ///< retain
@@ -72,12 +86,27 @@ typedef NS_OPTIONS(NSUInteger, YYEncodingType) {
  
  @param typeEncoding  A Type-Encoding string.
  @return The encoding type.
+ 
+ 通过指定类型编码字符串，
+ 返回类型编码字符串中Foundation Framework 编码字符和method encodings编码字符
  */
 YYEncodingType YYEncodingGetType(const char *typeEncoding);
 
 
 /**
  Instance variable information.
+ 
+ runtime 下的 ivar 数据结构
+ struct objc_ivar {
+    char *ivar_name                 OBJC2_UNAVAILABLE;  // 变量名
+    char *ivar_type                 OBJC2_UNAVAILABLE;  // 变量类型
+    int ivar_offset                 OBJC2_UNAVAILABLE;  // 基地址偏移字节
+ 
+ #ifdef __LP64__
+    int space                       OBJC2_UNAVAILABLE;
+#endif
+ 
+ }
  */
 @interface YYClassIvarInfo : NSObject
 @property (nonatomic, assign, readonly) Ivar ivar;              ///< ivar opaque struct
@@ -98,6 +127,16 @@ YYEncodingType YYEncodingGetType(const char *typeEncoding);
 
 /**
  Method information.
+
+ YYModel采用Runtime直接调用 Getter/Setter，
+ 所以要将Runtime Method属性暴露出来提供MethodInfo类获取相应的属性
+
+ runtime 下的数据结构
+ struct objc_method {
+    SEL method_name                 OBJC2_UNAVAILABLE;  // 方法名
+    char *method_types                  OBJC2_UNAVAILABLE;
+    IMP method_imp                      OBJC2_UNAVAILABLE;  // 方法实现
+ }
  */
 @interface YYClassMethodInfo : NSObject
 @property (nonatomic, assign, readonly) Method method;                  ///< method opaque struct
@@ -144,6 +183,23 @@ YYEncodingType YYEncodingGetType(const char *typeEncoding);
 
 /**
  Class information for a class.
+ 
+ struct objc_class {
+    Class isa  OBJC_ISA_AVAILABILITY;
+ #if !__OBJC2__
+    Class super_class                       OBJC2_UNAVAILABLE;  // 父类
+    const char *name                        OBJC2_UNAVAILABLE;  // 类名
+    long version                            OBJC2_UNAVAILABLE;  // 类的版本信息，默认为0
+    long info                               OBJC2_UNAVAILABLE;  // 类信息，供运行期使用的一些位标识
+    long instance_size                      OBJC2_UNAVAILABLE;  // 该类的实例变量大小
+    struct objc_ivar_list *ivars            OBJC2_UNAVAILABLE;  // 该类的成员变量链表
+    struct objc_method_list **methodLists   OBJC2_UNAVAILABLE;  // 方法定义的链表
+    struct objc_cache *cache                OBJC2_UNAVAILABLE;  // 方法缓存
+    struct objc_protocol_list *protocols    OBJC2_UNAVAILABLE;  // 协议链表
+ #endif
+ } OBJC2_UNAVAILABLE;
+ 
+
  */
 @interface YYClassInfo : NSObject
 @property (nonatomic, assign, readonly) Class cls; ///< class object
