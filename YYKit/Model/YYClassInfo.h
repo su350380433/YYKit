@@ -215,39 +215,52 @@ YYEncodingType YYEncodingGetType(const char *typeEncoding);
 /**
  If the class is changed (for example: you add a method to this class with
  'class_addMethod()'), you should call this method to refresh the class info cache.
+ 如果这个Class是改变的(列如: 你通过class_addMethod()添加了一个方法给这个类),你应该告诉这个方法去刷新class信息缓存
  
- After called this method, `needUpdate` will returns `YES`, and you should call 
+ After called this method, `needUpdate` will returns `YES`, and you should call
  'classInfoWithClass' or 'classInfoWithClassName' to get the updated class info.
+ 被方法告知之后，"needUpdate"应返回"YES",而且你应该告知'classInfoWithClass' or 'classInfoWithClassName'获取这个class更新信息
  */
 - (void)setNeedUpdate;
 
 /**
  If this method returns `YES`, you should stop using this instance and call
  `classInfoWithClass` or `classInfoWithClassName` to get the updated class info.
- 
+ 如果这个方法返回"YES",你应该停止使用这个对象并告知`classInfoWithClass` or `classInfoWithClassName` 去获取class更新信息
  @return Whether this class info need update.
+ 返回 这个class 信息是否需要更新
  */
-- (BOOL)needUpdate;
+-(BOOL)needUpdate;
 
 /**
  Get the class info of a specified Class.
  
+ 获取一个Class的class信息说明
  @discussion This method will cache the class info and super-class info
  at the first access to the Class. This method is thread-safe.
  
+ 描述 这个方法将缓存这个class信息 和 父类class信息,在第一次进入这个class时
+ 这个方法是线程安全的
  @param cls A class.
+ 参数 cls 一个class
  @return A class info, or nil if an error occurs.
+ 返回 一个Class 信息， 如果发生错误返回Nil
  */
 + (nullable instancetype)classInfoWithClass:(Class)cls;
 
 /**
  Get the class info of a specified Class.
+ 获取一个Class的class信息说明
  
  @discussion This method will cache the class info and super-class info
  at the first access to the Class. This method is thread-safe.
  
+ 描述 这个方法将缓存这个class信息和父类class 信息在第一次进入这个class时。
+ 这个方法是线程安全的
  @param className A class name.
+ 参数 className 一个class name
  @return A class info, or nil if an error occurs.
+ 返回 一个class info,如果出现错误返回Nil
  */
 + (nullable instancetype)classInfoWithClassName:(NSString *)className;
 

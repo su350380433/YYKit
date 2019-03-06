@@ -22,6 +22,8 @@
     self.titles = @[].mutableCopy;
     self.classNames = @[].mutableCopy;
     [self addCell:@"Model" class:@"YYModelExample"];
+    [self addCell:@"Model_Custom" class:@"BGTableViewController"];
+
     [self addCell:@"Image" class:@"YYImageExample"];
     [self addCell:@"Text" class:@"YYTextExample"];
 //    [self addCell:@"Utility" class:@"YYUtilityExample"];
