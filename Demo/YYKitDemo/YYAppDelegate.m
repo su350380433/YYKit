@@ -40,15 +40,15 @@
 @end
 @implementation YYExampleNavController
 - (BOOL)shouldAutorotate {
-    return YES;
+        return YES;
 }
 
-- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-    return UIInterfaceOrientationMaskPortrait;
-}
+-   (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+            return   UIInterfaceOrientationMaskPortrait;
+    }
 
-- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
-    return UIInterfaceOrientationPortrait;
+-   (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+        return UIInterfaceOrientationPortrait;
 }
 
 @end
