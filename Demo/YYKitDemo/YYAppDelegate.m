@@ -17,13 +17,13 @@
     CGSize _previousSize;
 }
 
-- (CGSize)sizeThatFits:(CGSize)size {
-    size = [super sizeThatFits:size];
-    if ([UIApplication sharedApplication].statusBarHidden) {
-        size.height = 64;
-    }
-    return size;
-}
+            - (CGSize)sizeThatFits:(CGSize)size {
+                    size = [super sizeThatFits:size];
+                    if ([UIApplication sharedApplication].statusBarHidden) {
+                            size.height = 64;
+                        }
+                return size;
+            }
 
 - (void)layoutSubviews {
     [super layoutSubviews];
