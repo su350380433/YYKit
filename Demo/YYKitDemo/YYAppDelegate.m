@@ -17,13 +17,13 @@
     CGSize _previousSize;
 }
 
-            - (CGSize)sizeThatFits:(CGSize)size {
-                    size = [super sizeThatFits:size];
-                    if ([UIApplication sharedApplication].statusBarHidden) {
-                            size.height = 64;
-                        }
-                return size;
-            }
+- (CGSize)sizeThatFits:(CGSize)size {
+    size = [super sizeThatFits:size];
+    if ([UIApplication sharedApplication].statusBarHidden) {
+        size.height = 64;
+    }
+    return size;
+}
 
 - (void)layoutSubviews {
     [super layoutSubviews];
@@ -40,19 +40,18 @@
 @end
 @implementation YYExampleNavController
 - (BOOL)shouldAutorotate {
-        return YES;
+    return YES;
 }
 
--   (UIInterfaceOrientationMask)supportedInterfaceOrientations {
-            return   UIInterfaceOrientationMaskPortrait;
-    }
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait;
+}
 
--   (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
-        return UIInterfaceOrientationPortrait;
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
 }
 
 @end
-
 
 
 @implementation YYAppDelegate
@@ -64,13 +63,13 @@
         nav.automaticallyAdjustsScrollViewInsets = NO;
     }
     [nav pushViewController:root animated:NO];
-    
+
     self.rootViewController = nav;
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     self.window.rootViewController = self.rootViewController;
     self.window.backgroundColor = [UIColor grayColor];
     [self.window makeKeyAndVisible];
-    
+
     return YES;
 }
 
